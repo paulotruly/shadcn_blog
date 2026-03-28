@@ -5,8 +5,11 @@ import type { Post as PostType } from './types'
 import { useEffect, useState } from 'react'
 import PaginationComponent from './components/Pagination'
 
-function Timeline() {
-  const [currentPage, setCurrentPage] = useState(1)
+interface TimelineProps{
+  page: number
+}
+
+function Timeline({page}: TimelineProps) {
   const [totalPosts, setTotalPosts] = useState(0)
   const [posts, setPosts] = useState<PostType[]>([])
   const [loading, setLoading] = useState(true)
@@ -15,14 +18,15 @@ function Timeline() {
 
   useEffect(() => {
     async function fetchPosts() {
-      const skip = (currentPage - 1) * 10
+      setLoading(true)
+      const skip = (page - 1) * 10
       const data = await getPostsWithTotal(10, skip)
       setPosts(data.posts)
       setTotalPosts(data.total)
       setLoading(false)
     }
     fetchPosts()
-  }, [currentPage])
+  }, [page])
 
   return (
     <main className="flex flex-col w-[650px] gap-5 items-center bg-slate-900 p-10">
@@ -34,7 +38,7 @@ function Timeline() {
         ))
       )}
 
-      <PaginationComponent currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage}/>
+      <PaginationComponent currentPage={page} totalPages={totalPages}/>
     </main>
   )
 }

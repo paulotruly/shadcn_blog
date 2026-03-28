@@ -7,11 +7,11 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination"
+import { useRouter } from "@tanstack/react-router"
 
 interface PaginationProps {
   currentPage: number
   totalPages: number
-  onPageChange: (page: number) => void
 }
 
 function getPageNumbers(currentPage: number, totalPages: number): (number | "ellipsis")[] {
@@ -33,10 +33,14 @@ function getPageNumbers(currentPage: number, totalPages: number): (number | "ell
 export default function PaginationComponent({
   currentPage, 
   totalPages,
-  onPageChange,
 }: PaginationProps) {
 
+const navigate = useRouter()
 const pages = getPageNumbers(currentPage, totalPages)
+
+const goToPage = (page: number) => {
+  navigate.navigate({to: '/', search: {page}})
+}
 
   return (
     <Pagination className="text-slate-400">
@@ -47,7 +51,7 @@ const pages = getPageNumbers(currentPage, totalPages)
             onClick={(e) => {
               e.preventDefault()
               if (currentPage > 1) {
-                onPageChange(currentPage - 1)
+                goToPage(currentPage - 1)
               }
             }}
             href="#"
@@ -63,7 +67,7 @@ const pages = getPageNumbers(currentPage, totalPages)
               <PaginationLink
                 onClick={(e) => {
                   e.preventDefault()
-                  onPageChange(page as number)
+                  goToPage(page as number)
                 }}
                 isActive={page === currentPage}
                 href="#"
@@ -81,7 +85,7 @@ const pages = getPageNumbers(currentPage, totalPages)
             onClick={(e) => {
               e.preventDefault()
               if (currentPage < totalPages) {
-                onPageChange(currentPage + 1)
+                goToPage(currentPage + 1)
               }
             }}
             href="#"

@@ -18,3 +18,9 @@ export async function getPostsWithTotal(limit: number = 10, skip: number = 0): P
     const data: PostsResponse = await response.json()
     return data
 }
+
+export async function getTotalPosts(): Promise<number> {
+    const response = await fetch(`${BASE_URL}/posts?limit=1`)
+    const data: PostsResponse = await response.json()
+    return data.total
+}
