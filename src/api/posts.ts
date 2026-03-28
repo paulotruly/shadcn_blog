@@ -12,3 +12,9 @@ export async function getPost(id: number): Promise<Post> {
     const response = await fetch(`${BASE_URL}/posts/${id}`)
     return response.json()
 }
+
+export async function getPostsWithTotal(limit: number = 10, skip: number = 0): Promise<PostsResponse> {
+    const response = await fetch(`${BASE_URL}/posts?limit=${limit}&skip=${skip}`)
+    const data: PostsResponse = await response.json()
+    return data
+}
