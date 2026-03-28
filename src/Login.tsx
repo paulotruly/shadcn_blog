@@ -1,6 +1,8 @@
+import { LoginForm } from "./components/ui/login-form"
+
 function Login() {
   return (
-    <div> Página de login </div>
+    <LoginForm/>
   )
 }
 
