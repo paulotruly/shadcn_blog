@@ -8,7 +8,7 @@ interface PostProps {
 
 function PostBlog({post}: PostProps) {
   return (
-    <Card className='h-[400px] w-[600px] bg-slate-800 p-5 border-slate-600 border text-white'>
+    <Card className='h-auto w-[600px] bg-slate-800 p-5 border-slate-600 border text-white'>
         <CardHeader className='mt-3'>
             <CardTitle className='font-bold text-lg'> {post.title} </CardTitle>
         </CardHeader>
