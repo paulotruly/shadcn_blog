@@ -29,7 +29,7 @@ function Timeline({page}: TimelineProps) {
   }, [page])
 
   return (
-    <main className="flex flex-col w-[650px] gap-5 items-center bg-slate-900 p-10">
+    <main className="flex flex-col w-[650px] gap-5 items-center justify-between bg-slate-900 p-10">
       {loading ? (
         <p className='text-white font-light'> Carregando.. </p>
       ) : (
