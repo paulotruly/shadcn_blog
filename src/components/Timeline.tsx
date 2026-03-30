@@ -1,9 +1,9 @@
-import './index.css'
+import '../index.css'
 import PostBlog from './PostBlog'
-import { getPosts, getPostsWithTotal } from './api/posts'
-import type { Post as PostType } from './types'
+import { getPostsWithTotal } from '../api/posts'
+import type { Post as PostType } from '../types'
 import { useEffect, useState } from 'react'
-import PaginationComponent from './components/Pagination'
+import PaginationComponent from './Pagination'
 
 interface TimelineProps{
   page: number

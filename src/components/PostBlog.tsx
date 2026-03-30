@@ -1,6 +1,6 @@
-import './index.css'
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from './components/ui/card'
-import type { Post } from "./types"
+import '../index.css'
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from './ui/card'
+import type { Post } from "../types"
 
 interface PostProps {
     post: Post

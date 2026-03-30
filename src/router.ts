@@ -1,9 +1,11 @@
 import { createRouter, createRootRoute, createRoute, redirect} from '@tanstack/react-router'
-import Home from './Home'
-import Login from './Login'
-import Dashboard from './Dashboard'
+import Home from './pages/Home'
+import Login from './pages/Login'
+import DashboardLayout from './dashboard/DashboardLayout'
+import DashboardIndex from './dashboard/DashboardIndex'
+import DashboardPosts from './dashboard/DashboardPosts'
 import z from 'zod'
-import { getPostsWithTotal, getTotalPosts} from './api/posts'
+import { getTotalPosts } from './api/posts'
 
 const rootRoute = createRootRoute()
 
@@ -36,14 +38,28 @@ const loginRoute = createRoute({
 const dashboardRoute = createRoute({
     getParentRoute: () => rootRoute,
     path: '/dashboard',
-    component: Dashboard,
+    component: DashboardLayout,
 })
 
+const dashboardIndexRoute = createRoute({
+    getParentRoute: () => dashboardRoute,
+    path: '/',
+    component: DashboardIndex,
+})
+
+const dashboardPostsRoute = createRoute({
+    getParentRoute: () => dashboardRoute,
+    path: '/posts',
+    component: DashboardPosts,
+})
 
 const routeTree = rootRoute.addChildren([
     indexRoute,
     loginRoute,    
-    dashboardRoute,
+    dashboardRoute.addChildren([
+        dashboardIndexRoute,
+        dashboardPostsRoute,
+    ]),
 ])
 
 const router = createRouter({routeTree})

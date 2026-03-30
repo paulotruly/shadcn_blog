@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "@tanstack/react-router"
+import { Link, useNavigate, Outlet } from "@tanstack/react-router"
 import {
   Sidebar,
   SidebarContent,
@@ -11,21 +11,20 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarProvider,
-  SidebarRail,
 } from "./ui/sidebar"
-import { FileText, LogOut } from "lucide-react"
+import { FileText, LogOut, Home } from "lucide-react"
 import { useAuth } from "@/context/AuthContext"
-import { getToken, removeToken } from "@/lib/cookies"
+import { removeToken } from "@/lib/cookies"
 
 const menuItems = [
-  { label: "Posts", icon: FileText, to: "/" },
+  { label: "Home", icon: Home, to: "/dashboard" },
+  { label: "Posts", icon: FileText, to: "/dashboard/posts" },
 ]
 
 function SidebarDashboard() {
 
   const { logout } = useAuth()
   const navigate = useNavigate()
-  const token = getToken()
 
   const handleLogout = () => {
     logout()
@@ -75,8 +74,8 @@ function SidebarDashboard() {
 
       </Sidebar>
 
-      <SidebarInset className=" bg-yellow-900">
-          <h1>Dashboard</h1>
+      <SidebarInset className="bg-slate-950 w-full min-h-screen text-white p-10">
+        <Outlet />
       </SidebarInset>
     </SidebarProvider>
   )

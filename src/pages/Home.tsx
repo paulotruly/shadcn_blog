@@ -1,5 +1,5 @@
-import Timeline from "./Timeline"
-import Navbar from "./components/Navbar"
+import Timeline from "../components/Timeline"
+import Navbar from "../components/Navbar"
 import { useSearch } from "@tanstack/react-router"
 
 function Home() {
