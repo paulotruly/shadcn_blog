@@ -1,10 +1,10 @@
 import { useNavigate } from "@tanstack/react-router"
-import { useEffect, useState } from "react"
-import { useAuth } from "./context/AuthContext"
-import { getToken, removeToken } from "./lib/cookies"
+import { useEffect } from "react"
+import { getToken } from "./lib/cookies"
+import SidebarDashboard from "./components/SidebarDashboard"
+import { SidebarInset } from "./components/ui/sidebar"
 
 function Dashboard() {
-  const { logout } = useAuth()
   const navigate = useNavigate()
   const token = getToken()
 
@@ -18,18 +18,8 @@ function Dashboard() {
     return null
   }
 
-  const handleLogout = () => {
-    logout()
-    removeToken()
-    navigate({ to: "/login" })
-  }
-
   return (
-    <div className="p-6">
-      <div className="mb-4">
-        <button onClick={handleLogout}>Logout</button>
-      </div>
-    </div>
+    <SidebarDashboard />
   )
 }
 
