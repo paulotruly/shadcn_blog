@@ -24,3 +24,12 @@ export async function getTotalPosts(): Promise<number> {
     const data: PostsResponse = await response.json()
     return data.total
 }
+
+export async function updatePost(id: number, data: Partial<Post>): Promise<Post> {
+    const response = await fetch(`${BASE_URL}/posts/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+    })
+    return response.json()
+}

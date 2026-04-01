@@ -20,6 +20,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { useNavigate } from '@tanstack/react-router'
 
 const columnHelper = createColumnHelper<Post>()
 
@@ -66,6 +67,8 @@ const columns = [
 ] as const
 
 function DashboardPosts() {
+  const navigate = useNavigate()
+
   const POST_PER_PAGE = 15
 
   const search = useSearch({ from: '/dashboard/posts' })
@@ -154,7 +157,7 @@ function DashboardPosts() {
                       </DropdownMenuTrigger>
 
                       <DropdownMenuContent className='bg-slate-800 border-slate-700 text-slate-200 w-40' align="end">
-                        <DropdownMenuItem className="focus:bg-slate-700 focus:text-white cursor-pointer" onClick={() => console.log("Editando post:", post.id)}>
+                        <DropdownMenuItem className="focus:bg-slate-700 focus:text-white cursor-pointer" onClick={() => navigate({to: '/dashboard/posts/$id/edit', params: {id: post.id}})}>
                           <PencilIcon size={15} className='mr-2' />
                           Edit
                         </DropdownMenuItem>
