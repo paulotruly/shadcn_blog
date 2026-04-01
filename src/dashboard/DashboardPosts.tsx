@@ -9,7 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Settings2, PencilIcon, TrashIcon } from "lucide-react"
+import { Settings2, PencilIcon, TrashIcon, ThumbsUp, ThumbsDown } from "lucide-react"
 import { createColumnHelper } from "@tanstack/react-table"
 import { getPostsWithTotal } from '../api/posts'
 import PaginationComponent from '@/components/Pagination'
@@ -46,16 +46,11 @@ const columns = [
 
   columnHelper.accessor('tags', {
     header: () => 'Tags',
-    cell: info => info.getValue().join(', '),
-  }),
-
-  columnHelper.accessor('reactions.likes', {
-    header: () => 'Likes',
     cell: info => info.getValue(),
   }),
 
-  columnHelper.accessor('reactions.dislikes', {
-    header: () => 'Dislikes',
+  columnHelper.accessor('reactions', {
+    header: () => 'Reactions',
     cell: info => info.getValue(),
   }),
 
@@ -133,9 +128,20 @@ function DashboardPosts() {
                   </TableCell>
 
                   <TableCell>{post.userId}</TableCell>
-                  <TableCell>{post.tags.join(', ')}</TableCell>
-                  <TableCell>{post.reactions.likes}</TableCell>
-                  <TableCell>{post.reactions.dislikes}</TableCell>
+
+                  <TableCell>{post.tags.map((tag) => (
+                    <span key={tag} className="inline-block bg-slate-700 text-slate-200 px-2 py-1 rounded-full text-xs mr-1">
+                      {tag}
+                    </span>
+                  ))}</TableCell>
+
+                  <TableCell>
+                    <div className="flex items-center">
+                      <span className='w-20'> <ThumbsUp  size={16} className="inline" /> {post.reactions.likes} </span>
+                      <span> <ThumbsDown size={16} className="inline" /> {post.reactions.dislikes} </span>
+                    </div>
+                  </TableCell>
+                  
                   <TableCell>{post.views}</TableCell>
 
 
