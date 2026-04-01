@@ -9,10 +9,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Settings2 } from "lucide-react"
+import { Settings2, PencilIcon, TrashIcon } from "lucide-react"
 import { createColumnHelper } from "@tanstack/react-table"
 import { getPostsWithTotal } from '../api/posts'
 import PaginationComponent from '@/components/Pagination'
+import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 const columnHelper = createColumnHelper<Post>()
 
@@ -57,7 +64,7 @@ const columns = [
     cell: info => info.getValue(),
   }),
 
-  columnHelper.accessor('config', {
+  columnHelper.accessor('views', {
     header: () => null,
     cell: info => info.getValue(),
   }),
@@ -130,9 +137,30 @@ function DashboardPosts() {
                   <TableCell>{post.reactions.likes}</TableCell>
                   <TableCell>{post.reactions.dislikes}</TableCell>
                   <TableCell>{post.views}</TableCell>
+
+
                   <TableCell>
-                    <Settings2 size={17} className='text-slate-300 cursor-pointer hover:text-slate-400 transition-colors'></Settings2>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon" className="data-[state=open]:bg-slate-700/50">
+                          <Settings2 size={17} className='text-slate-400 hover:text-slate-200 transition-colors' />
+                        </Button>
+                      </DropdownMenuTrigger>
+
+                      <DropdownMenuContent className='bg-slate-800 border-slate-700 text-slate-200 w-40' align="end">
+                        <DropdownMenuItem className="focus:bg-slate-700 focus:text-white cursor-pointer" onClick={() => console.log("Editando post:", post.id)}>
+                          <PencilIcon size={15} className='mr-2' />
+                          Edit
+                        </DropdownMenuItem>
+
+                        <DropdownMenuItem className="focus:bg-slate-700 focus:text-white cursor-pointer" onClick={() => console.log("Deletando post:", post.id)}>
+                          <TrashIcon size={15} className='mr-2' />
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </TableCell>
+
                 </TableRow>
               ))
             ) : (
