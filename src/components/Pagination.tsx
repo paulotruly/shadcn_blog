@@ -12,9 +12,10 @@ import { useRouter } from "@tanstack/react-router"
 interface PaginationProps {
   currentPage: number
   totalPages: number
+  route?: string
 }
 
-function getPageNumbers(currentPage: number, totalPages: number): (number | "ellipsis")[] {
+function getPageNumbers(currentPage: number, totalPages: number, route: string): (number | "ellipsis")[] {
   if (currentPage === 1) {
     return [1, 2, 3, "ellipsis", totalPages - 1, totalPages]
   }
@@ -33,13 +34,14 @@ function getPageNumbers(currentPage: number, totalPages: number): (number | "ell
 export default function PaginationComponent({
   currentPage, 
   totalPages,
+  route = '/',
 }: PaginationProps) {
 
 const navigate = useRouter()
-const pages = getPageNumbers(currentPage, totalPages)
+const pages = getPageNumbers(currentPage, totalPages, route)
 
 const goToPage = (page: number) => {
-  navigate.navigate({to: '/', search: {page}})
+  navigate.navigate({to: route, search: {page}})
 }
 
   return (
