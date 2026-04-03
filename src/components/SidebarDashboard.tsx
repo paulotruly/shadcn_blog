@@ -17,7 +17,7 @@ import { useAuth } from "@/context/AuthContext"
 import { removeToken } from "@/lib/cookies"
 
 const menuItems = [
-  { label: "Home", icon: Home, to: "/dashboard" },
+  // { label: "Home", icon: Home, to: "/dashboard" },
   { label: "Posts", icon: FileText, to: "/dashboard/posts" },
 ]
 

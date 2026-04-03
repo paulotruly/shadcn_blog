@@ -1,13 +1,22 @@
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { useLoaderData } from '@tanstack/react-router'
+import { useLoaderData, useNavigate } from '@tanstack/react-router'
 import Comments from "@/components/Comments"
-import { ThumbsDown, ThumbsUp } from "lucide-react"
+import { ThumbsDown, ThumbsUp, ArrowLeft } from "lucide-react"
 
 function PostPage() {
     const { post, comments = [] } = useLoaderData({from: '/post/$id'})
+    const navigate = useNavigate()
     
   return (
     <div className="flex flex-col items-center bg-slate-900 min-h-screen p-5">
+        <button 
+            onClick={() => navigate({ to: '/' })}
+            className="flex items-center gap-2 text-slate-400 mb-5 self-start ml-[calc(50%-300px)]"
+        >
+            <ArrowLeft size={18} />
+            Voltar
+        </button>
+
         <Card className='h-auto w-[600px] bg-slate-800 p-5 border-slate-600 border text-white'>
             <CardHeader className='mt-3'>
                 <CardTitle className='font-bold text-lg'> {post.title} </CardTitle>
