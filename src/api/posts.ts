@@ -1,4 +1,4 @@
-import type { Post, PostsResponse } from "@/types";
+import type { Comment, CommentsResponse, Post, PostsResponse } from "@/types";
 
 const BASE_URL = "https://dummyjson.com"
 
@@ -32,4 +32,15 @@ export async function updatePost(id: number, data: Partial<Post>): Promise<Post>
         body: JSON.stringify(data),
     })
     return response.json()
+}
+
+export async function getCommentsForPost(id: number, limit: number, skip: number): Promise<CommentsResponse> {
+    const response = await fetch(`${BASE_URL}/posts/${id}/comments?limit=${limit}&skip=${skip}`)
+    return response.json()
+}
+
+export async function getComments(id: number): Promise<Comment[]> {
+    const response = await fetch(`${BASE_URL}/posts/${id}/comments`)
+    const data: CommentsResponse = await response.json()
+    return data.comments ?? []
 }

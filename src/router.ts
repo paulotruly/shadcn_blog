@@ -5,8 +5,9 @@ import DashboardLayout from './dashboard/DashboardLayout'
 import DashboardIndex from './dashboard/DashboardIndex'
 import DashboardPosts from './dashboard/DashboardPosts'
 import z from 'zod'
-import { getPost, getTotalPosts } from './api/posts'
+import { getPost, getTotalPosts, getComments } from './api/posts'
 import DashboardEditPostPage from './dashboard/DashboardEditPostPage'
+import PostPage from './pages/PostPage'
 
 const rootRoute = createRootRoute()
 
@@ -34,6 +35,18 @@ const loginRoute = createRoute({
     getParentRoute: () => rootRoute,
     path: '/login',
     component: Login,
+})
+
+const postRoute = createRoute({
+    getParentRoute: () => rootRoute,
+    path: '/post/$id',
+    loader: async ({params}) => {
+        const postId = Number(params.id)
+        const post = await getPost(postId)
+        const comments = await getComments(postId)
+        return { post, comments }
+    },
+    component: PostPage,
 })
 
 const dashboardRoute = createRoute({
@@ -66,6 +79,7 @@ const dashboardEditPostRoute = createRoute({
 
 const routeTree = rootRoute.addChildren([
     indexRoute,
+    postRoute,
     loginRoute,    
     dashboardRoute.addChildren([
         dashboardIndexRoute,
