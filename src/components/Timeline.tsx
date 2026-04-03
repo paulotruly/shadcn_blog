@@ -4,6 +4,7 @@ import { getPostsWithTotal } from '../api/posts'
 import type { Post as PostType } from '../types'
 import { useEffect, useState } from 'react'
 import PaginationComponent from './Pagination'
+import { useNavigate } from '@tanstack/react-router'
 
 interface TimelineProps{
   page: number
@@ -13,8 +14,13 @@ function Timeline({page}: TimelineProps) {
   const [totalPosts, setTotalPosts] = useState(0)
   const [posts, setPosts] = useState<PostType[]>([])
   const [loading, setLoading] = useState(true)
+  const navigate = useNavigate()
 
   const totalPages = Math.ceil(totalPosts / 10)
+
+  const handleClick = (id: number) => {
+    navigate({ to: `/post/${id}`, params: { id } })
+  }
 
   useEffect(() => {
     async function fetchPosts() {
@@ -34,7 +40,7 @@ function Timeline({page}: TimelineProps) {
         <p className='text-white font-light'> Carregando.. </p>
       ) : (
         posts.map((post) => (
-          <PostBlog key={post.id} post={post} />
+          <PostBlog key={post.id} post={post} onClick={() => handleClick(post.id)}/>
         ))
       )}
 
