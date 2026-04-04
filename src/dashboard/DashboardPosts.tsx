@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/table"
 import { Settings2, PencilIcon, TrashIcon, ThumbsUp, ThumbsDown } from "lucide-react"
 import { createColumnHelper } from "@tanstack/react-table"
-import { getPostsWithTotal } from '../api/posts'
+import { deletePost, getPostsWithTotal } from '../api/posts'
 import PaginationComponent from '@/components/Pagination'
 import { Button } from "@/components/ui/button"
 import {
@@ -21,6 +21,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useNavigate } from '@tanstack/react-router'
+import DeleteConfirmationDialog from '@/components/DeleteConfirmationDialog'
 
 const columnHelper = createColumnHelper<Post>()
 
@@ -76,7 +77,25 @@ function DashboardPosts() {
   const [posts, setPosts] = useState<Post[]>([])
   const [totalPosts, setTotalPosts] = useState(0)
   const [loading, setLoading] = useState(true)
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [postToDelete, setPostToDelete] = useState<Post | null>(null)
+  const [isDeleting, setIsDeleting] = useState(false)
   const totalPages = Math.ceil(totalPosts / POST_PER_PAGE)
+
+  const handleDeleteClick = (post: Post) => {
+    setPostToDelete(post)
+    setDeleteDialogOpen(true)
+  }
+
+  const handleDeleteConfirm = async () => {
+    if (!postToDelete) return
+    setIsDeleting(true)
+    await deletePost(postToDelete.id)
+    setPosts(posts.filter(p => p.id !== postToDelete.id)) // não entendi isso
+    setDeleteDialogOpen(false)
+    setPostToDelete(null)
+    setIsDeleting(false)
+  }
 
   useEffect(() => {
     async function fetchPosts() {
@@ -162,7 +181,7 @@ function DashboardPosts() {
                           Edit
                         </DropdownMenuItem>
 
-                        <DropdownMenuItem className="focus:bg-slate-700 focus:text-white cursor-pointer" onClick={() => console.log("Deletando post:", post.id)}>
+                        <DropdownMenuItem className="focus:bg-slate-700 focus:text-white cursor-pointer text-destructive focus:text-destructive" onClick={() => handleDeleteClick(post)}>
                           <TrashIcon size={15} className='mr-2' />
                           Delete
                         </DropdownMenuItem>
@@ -184,6 +203,14 @@ function DashboardPosts() {
       </Table>
         
       <PaginationComponent currentPage={page} totalPages={totalPages} route='/dashboard/posts' />
+
+      <DeleteConfirmationDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        postTitle={postToDelete?.title || ""}
+        onConfirm={handleDeleteConfirm}
+        isDeleting={isDeleting}
+      />
     </div>
   )
 }

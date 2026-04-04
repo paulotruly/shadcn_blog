@@ -44,3 +44,10 @@ export async function getComments(id: number): Promise<Comment[]> {
     const data: CommentsResponse = await response.json()
     return data.comments ?? []
 }
+
+export async function deletePost(id: number): Promise<Post> {
+    const response = await fetch(`${BASE_URL}/posts/${id}`, {
+        method: 'DELETE',
+    })
+    return response.json()
+}
