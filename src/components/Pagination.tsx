@@ -35,7 +35,6 @@ function getPageNumbers(currentPage: number, totalPages: number): (number | "ell
   return [1, "ellipsis", currentPage - 1, currentPage, currentPage + 1, "ellipsis", totalPages]
 }
 
-
 export default function PaginationComponent({
   currentPage, 
   totalPages,
@@ -54,8 +53,8 @@ export default function PaginationComponent({
   }
 
   return (
-    <Pagination className="text-slate-400">
-      <PaginationContent>
+    <Pagination className="text-slate-400 select-none">
+      <PaginationContent className="gap-1">
 
         <PaginationItem>
           <PaginationPrevious
@@ -66,13 +65,14 @@ export default function PaginationComponent({
               }
             }}
             href="#"
+            className={currentPage === 1 ? "opacity-50 pointer-events-none" : ""}
           />
         </PaginationItem>
 
         {pages.map((page, index) => (
           <PaginationItem key={index}>
             {page === "ellipsis" ? (
-              <PaginationEllipsis />
+              <PaginationEllipsis className="text-slate-600" />
             ) : (
               <PaginationLink
                 onClick={(e) => {
@@ -81,6 +81,10 @@ export default function PaginationComponent({
                 }}
                 isActive={page === currentPage}
                 href="#"
+                className={page === currentPage 
+                  ? "bg-slate-700 text-slate-100 hover:bg-slate-600" 
+                  : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"
+                }
               >
                 {page}
               </PaginationLink>
@@ -97,6 +101,7 @@ export default function PaginationComponent({
               }
             }}
             href="#"
+            className={currentPage === totalPages ? "opacity-50 pointer-events-none" : ""}
           />
         </PaginationItem>
 

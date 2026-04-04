@@ -7,15 +7,13 @@ function Home() {
   const page = search.page ?? 1
 
   return (
-    <>
+    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
       <Navbar />
       
-      <div className="flex flex-row justify-between min-h-screen">
-        <div className="flex-1 min-h-screen bg-slate-950"> </div>
+      <div className="flex justify-center">
         <Timeline page={page}/>
-        <div className="flex-1 min-h-screen bg-slate-950">  </div>
       </div>
-    </>
+    </div>
   )
 }
 

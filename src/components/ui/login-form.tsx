@@ -14,12 +14,11 @@ import {
 } from "@/components/ui/card"
 import {
   Field,
-  FieldGroup,
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { useState } from "react"
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, LogIn } from "lucide-react"
 
 export function LoginForm({
 
@@ -32,6 +31,7 @@ export function LoginForm({
   const { login, fetchUserDetails } = useAuth()
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
 
   const navigate = useNavigate()
 
@@ -42,7 +42,8 @@ export function LoginForm({
   }, [token, navigate])
 
   async function handleSubmit(event: React.FormEvent) {
-    event.preventDefault();
+    event.preventDefault()
+    setIsLoading(true)
 
     const response = await fetch("https://dummyjson.com/auth/login", {
     method: "POST",
@@ -63,65 +64,87 @@ export function LoginForm({
       navigate({ to: '/dashboard' })
     } else {
       console.error("Login failed: ", data)
+      setIsLoading(false)
     }
   }
 
   return (
-
-    <div className={cn("flex flex-col justify-center items-center gap-6 bg-slate-950 min-h-screen text-white", className)} {...props}>
+    <div className={cn("flex flex-col justify-center items-center min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white", className)} {...props}>
+        
+        {/* Botão voltar */}
         <button 
           onClick={() => navigate({ to: '/' })}
-          className="flex items-center gap-2 text-slate-400 mb-5">
-            <ArrowLeft size={18} />
-            Go back
+          className="absolute top-8 left-8 flex items-center gap-2 text-slate-500 hover:text-slate-300 transition-colors group"
+        >
+            <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
+            <span className="text-sm">Voltar</span>
         </button>
 
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle>Login to your account</CardTitle>
-          <CardDescription>
-            Enter your email below to login to your account
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit}>
-            <FieldGroup>
+      <div className="w-full max-w-[400px] px-4">
+        
+        {/* Card de login */}
+        <Card className="bg-slate-900/50 border-slate-800 backdrop-blur-sm">
+          <CardHeader className="space-y-1 pb-6">
+            <CardTitle className="text-xl text-slate-100">Login</CardTitle>
+            <CardDescription className="text-slate-500">
+              Use suas credenciais para acessar
+            </CardDescription>
+          </CardHeader>
+          
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-4">
               <Field>
-                <FieldLabel htmlFor="username">Username</FieldLabel>
+                <FieldLabel htmlFor="username" className="text-slate-400">Usuário</FieldLabel>
                 <Input
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   id="username"
                   type="text"
+                  placeholder="seu nome de usuário"
+                  className="bg-slate-800/50 border-slate-700 text-slate-100 placeholder:text-slate-600 focus:border-slate-500 focus:ring-slate-500/20"
                   required
                 />
               </Field>
+              
               <Field>
-                <div className="flex items-center">
-                  <FieldLabel htmlFor="password">Password</FieldLabel>
-                  <a
-                    href="#"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                  >
-                    Forgot your password?
-                  </a>
-                </div>
+                <FieldLabel htmlFor="password" className="text-slate-400">Senha</FieldLabel>
                 <Input
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                id="password"
-                type="password"
-                required />
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  id="password"
+                  type="password"
+                  placeholder="••••••••"
+                  className="bg-slate-800/50 border-slate-700 text-slate-100 placeholder:text-slate-600 focus:border-slate-500 focus:ring-slate-500/20"
+                  required
+                />
               </Field>
-              <Field>
-                <Button type="submit" className="bg-slate-400 text-slate-800">Login</Button>
-              </Field>
-            </FieldGroup>
-          </form>
-        </CardContent>
-      </Card>
+              
+              <Button 
+                type="submit" 
+                className="w-full bg-slate-100 text-slate-900 hover:bg-slate-200 font-medium transition-colors mt-2"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 border-2 border-slate-900/30 border-t-slate-900 rounded-full animate-spin" />
+                    Entrando...
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <LogIn size={18} />
+                    Entrar
+                  </div>
+                )}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+
+        {/* Dica */}
+        <p className="text-center text-slate-600 text-xs mt-6">
+          Demo: use <span className="text-slate-500">adrianf</span> / <span className="text-slate-500">adrianf</span>
+        </p>
+      </div>
     </div>
-
-
   )
 }

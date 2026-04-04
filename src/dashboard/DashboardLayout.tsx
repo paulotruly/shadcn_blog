@@ -17,7 +17,7 @@ function DashboardLayout() {
     return null
   }
 
-  return <SidebarDashboard />
+  return <SidebarDashboard/>
 }
 
 export default DashboardLayout

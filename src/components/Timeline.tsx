@@ -5,6 +5,7 @@ import type { Post as PostType } from '../types'
 import { useEffect, useState } from 'react'
 import PaginationComponent from './Pagination'
 import { useNavigate } from '@tanstack/react-router'
+import { FileText } from 'lucide-react'
 
 interface TimelineProps{
   page: number
@@ -35,16 +36,30 @@ function Timeline({page}: TimelineProps) {
   }, [page])
 
   return (
-    <main className="flex flex-col w-[650px] gap-5 items-center justify-between bg-slate-900 p-10">
-      {loading ? (
-        <p className='text-white font-light'> Carregando.. </p>
-      ) : (
-        posts.map((post) => (
-          <PostBlog key={post.id} post={post} onClick={() => handleClick(post.id)}/>
-        ))
-      )}
+    <main className="flex flex-col w-full max-w-[720px] gap-6 items-center py-12 px-4">
 
-      <PaginationComponent currentPage={page} totalPages={totalPages}/>
+      {/* Posts */}
+      <div className="flex flex-col w-full justify-center items-center gap-4">
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-20 gap-4">
+            <div className="w-8 h-8 border-2 border-slate-600 border-t-slate-400 rounded-full animate-spin" />
+            <p className='text-slate-500 text-sm'>Carregando posts...</p>
+          </div>
+        ) : posts.length > 0 ? (
+          posts.map((post) => (
+            <PostBlog key={post.id} post={post} onClick={() => handleClick(post.id)}/>
+          ))
+        ) : (
+          <div className="flex flex-col items-center justify-center py-20 gap-3">
+            <p className='text-slate-500'>Nenhum post encontrado.</p>
+          </div>
+        )}
+      </div>
+
+      {/* Paginação */}
+      <div className="mt-4">
+        <PaginationComponent currentPage={page} totalPages={totalPages}/>
+      </div>
     </main>
   )
 }

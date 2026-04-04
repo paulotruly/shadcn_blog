@@ -9,8 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Settings2, PencilIcon, TrashIcon, ThumbsUp, ThumbsDown } from "lucide-react"
-import { createColumnHelper } from "@tanstack/react-table"
+import { Settings2, PencilIcon, TrashIcon, ThumbsUp, ThumbsDown, FileText } from "lucide-react"
 import { deletePost, getPostsByUserId } from '../api/posts'
 import PaginationComponent from '@/components/Pagination'
 import { Button } from "@/components/ui/button"
@@ -23,45 +22,6 @@ import {
 import { useNavigate } from '@tanstack/react-router'
 import DeleteConfirmationDialog from '@/components/DeleteConfirmationDialog'
 import { useAuth } from '@/context/AuthContext'
-
-const columnHelper = createColumnHelper<Post>()
-
-const columns = [
-  columnHelper.accessor('id', {
-    header: () => 'ID',
-    cell: info => info.getValue(),
-  }),
-
-  columnHelper.accessor('title', {
-    header: () => 'Título',
-    cell: info => info.getValue(),
-  }),
-
-  columnHelper.accessor('body', {
-    header: () => 'Conteúdo',
-    cell: info => info.getValue(),
-  }),
-
-  columnHelper.accessor('tags', {
-    header: () => 'Tags',
-    cell: info => info.getValue(),
-  }),
-
-  columnHelper.accessor('reactions', {
-    header: () => 'Reactions',
-    cell: info => info.getValue(),
-  }),
-
-  columnHelper.accessor('views', {
-    header: () => 'Views',
-    cell: info => info.getValue(),
-  }),
-
-  columnHelper.accessor('views', {
-    header: () => null,
-    cell: info => info.getValue(),
-  }),
-] as const
 
 function DashboardPosts() {
   const { user } = useAuth()
@@ -110,78 +70,99 @@ function DashboardPosts() {
   }, [page, user?.id])
 
   return (
-    <div className="w-full overflow-x-auto">
-      <Table className='text-slate-400 text-md mb-5'>
-        
-        <TableHeader className='bg-slate-400 text-slate-900'>
-          <TableRow>
-            {columns.map((column, index) => (
-              <TableHead key={`column-${index}`}>
-                {typeof column.header === 'function' 
-                  ? (column.header as (() => string))() 
-                  : column.header}
-              </TableHead>
-            ))}
-          </TableRow>
-        </TableHeader>
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-slate-800 border border-slate-700/50">
+            <FileText size={20} className="text-slate-400" />
+          </div>
+          <div>
+            <h1 className="text-xl font-semibold text-slate-100">Posts</h1>
+          </div>
+        </div>
+      </div>
 
-        <TableBody>
-          {loading ? (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="text-center">
-                Carregando posts...
-              </TableCell>
+      {/* Table */}
+      <div className="rounded-xl border border-slate-800/50 bg-slate-900/30 overflow-hidden">
+        <Table>
+          <TableHeader>
+            <TableRow className="border-slate-800/50 hover:bg-transparent">
+              <TableHead className="text-slate-400 font-medium">ID</TableHead>
+              <TableHead className="text-slate-400 font-medium">Título</TableHead>
+              <TableHead className="text-slate-400 font-medium hidden lg:table-cell">Conteúdo</TableHead>
+              <TableHead className="text-slate-400 font-medium hidden xl:table-cell">Tags</TableHead>
+              <TableHead className="text-slate-400 font-medium">Reações</TableHead>
+              <TableHead className="text-slate-400 font-medium hidden md:table-cell">Views</TableHead>
             </TableRow>
-          ) : (
-            posts.length > 0 ? (
+          </TableHeader>
+
+          <TableBody>
+            {loading ? (
+              <TableRow>
+                <TableCell colSpan={7} className="text-center py-12">
+                  <div className="flex flex-col items-center gap-3">
+                    <div className="w-6 h-6 border-2 border-slate-600 border-t-slate-400 rounded-full animate-spin" />
+                    <p className="text-slate-500 text-sm">Carregando posts...</p>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ) : posts.length > 0 ? (
               posts.map((post) => (
-                <TableRow className='hover:bg-slate-300/10'  key={post.id}>
-                  <TableCell>{post.id}</TableCell>
-                  <TableCell>
+                <TableRow key={post.id} className="border-slate-800/30 hover:bg-slate-800/20 transition-colors">
+                  <TableCell className="font-mono text-slate-500">{post.id}</TableCell>
+                  <TableCell className="font-medium text-slate-200 max-w-[200px] truncate">
                     {post.title.length > 30 
                       ? post.title.slice(0, 30) + '...' 
                       : post.title}
                   </TableCell>
 
-                  <TableCell>
+                  <TableCell className="text-slate-400 max-w-[200px] truncate hidden lg:table-cell">
                     {post.body.length > 35 
                       ? post.body.slice(0, 35) + '...' 
                       : post.body}
                   </TableCell>
 
-                  <TableCell>{post.tags.map((tag) => (
-                    <span key={tag} className="inline-block bg-slate-700 text-slate-200 px-2 py-1 rounded-full text-xs mr-1">
-                      {tag}
-                    </span>
-                  ))}</TableCell>
+                  <TableCell className="hidden xl:table-cell">
+                    <div className="flex flex-wrap gap-1">
+                      {post.tags.slice(0, 2).map((tag) => (
+                        <span key={tag} className="inline-block bg-slate-800 text-slate-400 px-2 py-0.5 rounded text-xs border border-slate-700/50">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </TableCell>
 
                   <TableCell>
-                    <div className="flex items-center">
-                      <span className='w-20'> <ThumbsUp  size={16} className="inline" /> {post.reactions.likes} </span>
-                      <span> <ThumbsDown size={16} className="inline" /> {post.reactions.dislikes} </span>
+                    <div className="flex items-center gap-3">
+                      <span className="flex items-center gap-1 text-slate-400 text-sm"> 
+                        <ThumbsUp size={14} /> {post.reactions.likes} 
+                      </span>
+                      <span className="flex items-center gap-1 text-slate-400 text-sm"> 
+                        <ThumbsDown size={14} /> {post.reactions.dislikes} 
+                      </span>
                     </div>
                   </TableCell>
                   
-                  <TableCell>{post.views}</TableCell>
-
+                  <TableCell className="text-slate-500 hidden md:table-cell">{post.views}</TableCell>
 
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="data-[state=open]:bg-slate-700/50">
-                          <Settings2 size={17} className='text-slate-400 hover:text-slate-200 transition-colors' />
+                        <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-500 hover:text-slate-200 hover:bg-slate-800">
+                          <Settings2 size={16} />
                         </Button>
                       </DropdownMenuTrigger>
 
-                      <DropdownMenuContent className='bg-slate-800 border-slate-700 text-slate-200 w-40' align="end">
-                        <DropdownMenuItem className="focus:bg-slate-700 focus:text-white cursor-pointer" onClick={() => navigate({to: '/dashboard/posts/$id/edit', params: {id: post.id}})}>
-                          <PencilIcon size={15} className='mr-2' />
-                          Edit
+                      <DropdownMenuContent className="bg-slate-800 border-slate-700 text-slate-200 w-40" align="end">
+                        <DropdownMenuItem className="focus:bg-slate-700 focus:text-slate-100 cursor-pointer" onClick={() => navigate({to: '/dashboard/posts/$id/edit', params: {id: post.id}})}>
+                          <PencilIcon size={15} className="mr-2" />
+                          Editar
                         </DropdownMenuItem>
 
-                        <DropdownMenuItem className="focus:bg-slate-700 focus:text-white cursor-pointer text-destructive focus:text-destructive" onClick={() => handleDeleteClick(post)}>
-                          <TrashIcon size={15} className='mr-2' />
-                          Delete
+                        <DropdownMenuItem className="focus:bg-red-900/30 focus:text-red-400 cursor-pointer text-red-400" onClick={() => handleDeleteClick(post)}>
+                          <TrashIcon size={15} className="mr-2" />
+                          Excluir
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -191,16 +172,21 @@ function DashboardPosts() {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="text-center">
-                  Nenhum post encontrado.
+                <TableCell colSpan={7} className="text-center py-12">
+                  <div className="flex flex-col items-center gap-3">
+                    <FileText size={32} className="text-slate-700" />
+                    <p className="text-slate-500">Nenhum post encontrado.</p>
+                  </div>
                 </TableCell>
               </TableRow>
-            )
-          )}
-        </TableBody>
-      </Table>
+            )}
+          </TableBody>
+        </Table>
+      </div>
         
-      <PaginationComponent currentPage={page} totalPages={totalPages} route='/dashboard/posts' />
+      <div className="flex justify-center">
+        <PaginationComponent currentPage={page} totalPages={totalPages} route="/dashboard/posts" />
+      </div>
 
       <DeleteConfirmationDialog
         open={deleteDialogOpen}

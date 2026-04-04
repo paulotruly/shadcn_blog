@@ -12,7 +12,7 @@ import {
   SidebarMenuItem,
   SidebarProvider,
 } from "./ui/sidebar"
-import { FileText, LogOut } from "lucide-react"
+import { FileText, LogOut, LayoutDashboard } from "lucide-react"
 import { useAuth } from "@/context/AuthContext"
 import { removeToken } from "@/lib/cookies"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
@@ -32,25 +32,31 @@ function SidebarDashboard() {
   }
 
   return (
-    <SidebarProvider>
-      <Sidebar variant="inset" className="bg-slate-800 w-72 border-r-0">
+    <SidebarProvider className="!bg-slate-950">
+      <Sidebar variant="inset" className="bg-slate-900 border-r border-slate-800/50 w-64">
         
-        <SidebarHeader>
-          <div className="flex items-center gap-2 px-2 py-4">
-            <h2 className="text-xl font-bold text-white">dashboard</h2>
+        <SidebarHeader className="border-b border-slate-800/50">
+          <div className="flex items-center gap-3 px-4 py-5">
+            <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-slate-800 border border-slate-700/50">
+              <LayoutDashboard size={18} className="text-slate-400" />
+            </div>
+            <div>
+              <h2 className="text-base font-semibold text-slate-100">Dashboard</h2>
+              <p className="text-xs text-slate-500">Gerenciamento</p>
+            </div>
           </div>
         </SidebarHeader>
 
-        <SidebarContent>
+        <SidebarContent className="bg-slate-900">
           <SidebarGroup>
             <SidebarGroupContent>
-              <SidebarMenu>
+              <SidebarMenu className="gap-1">
                 {menuItems.map((item) => (
                   <SidebarMenuItem key={item.label}>
-                    <SidebarMenuButton asChild>
-                      <Link to={item.to} className="text-white text-lg">
-                        <item.icon/>
-                        <span>{item.label}</span>
+                    <SidebarMenuButton asChild className="text-slate-400 hover:text-slate-100 hover:bg-slate-800/50 data-[active=true]:bg-slate-800 data-[active=true]:text-slate-100">
+                      <Link to={item.to}>
+                        <item.icon size={18} />
+                        <span className="font-medium">{item.label}</span>
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -60,40 +66,41 @@ function SidebarDashboard() {
           </SidebarGroup>
         </SidebarContent>
 
-        <SidebarFooter className="border-t border-slate-700 pt-4">
-          <div className="flex items-center gap-3 px-2">
+        <SidebarFooter className="border-t border-slate-800/50 p-4">
+          <div className="flex items-center gap-3">
             
-            <Avatar className="h-9 w-9 border-2 border-slate-600">
+            <Avatar className="h-9 w-9 border border-slate-700/50">
               <AvatarImage src={userDetails?.image} alt={userDetails?.firstName} />
-              {/* mostra a primeira letra do nome se a imagem não carregar */}
-              <AvatarFallback className="bg-slate-700 text-white text-sm">
+              <AvatarFallback className="bg-slate-800 text-slate-300 text-sm">
                 {userDetails?.firstName?.charAt(0) || user?.username?.charAt(0)}
               </AvatarFallback>
             </Avatar>
 
-            <div className="flex flex-col">
-              <span className="text-sm font-medium text-white">
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-slate-200 truncate">
                 {userDetails?.firstName} {userDetails?.lastName}
-              </span>
-              <span className="text-xs text-slate-400">
+              </p>
+              <p className="text-xs text-slate-500 truncate">
                 @{user?.username}
-              </span>
+              </p>
             </div>
 
             <button
               onClick={handleLogout}
-              className="ml-auto p-2 hover:bg-slate-700 rounded-md transition-colors"
+              className="p-2 hover:bg-slate-800 rounded-lg transition-colors group"
               title="Sair"
             >
-              <LogOut size={18} className="text-slate-400 hover:text-white" />
+              <LogOut size={18} className="text-slate-500 group-hover:text-slate-300" />
             </button>
           </div>
         </SidebarFooter>
 
       </Sidebar>
 
-      <SidebarInset className="bg-slate-950 w-full min-h-screen text-white p-10">
-        <Outlet/>
+      <SidebarInset className="!bg-slate-950 min-h-screen">
+        <div className="p-8 bg-slate-950 min-h-screen">
+          <Outlet/>
+        </div>
       </SidebarInset>
     </SidebarProvider>
   )
