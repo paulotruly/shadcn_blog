@@ -14,7 +14,7 @@ function PostPage() {
             className="flex items-center gap-2 text-slate-400 mb-5 self-start ml-[calc(50%-300px)]"
         >
             <ArrowLeft size={18} />
-            Voltar
+            Go back
         </button>
 
         <Card className='h-auto w-[600px] bg-slate-800 p-5 border-slate-600 border text-white'>

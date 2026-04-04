@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { useState } from "react"
+import { ArrowLeft } from "lucide-react"
 
 export function LoginForm({
 
@@ -68,7 +69,14 @@ export function LoginForm({
   return (
 
     <div className={cn("flex flex-col justify-center items-center gap-6 bg-slate-950 min-h-screen text-white", className)} {...props}>
-      <Card className="w-full max-w-md px-5 py-10">
+        <button 
+          onClick={() => navigate({ to: '/' })}
+          className="flex items-center gap-2 text-slate-400 mb-5">
+            <ArrowLeft size={18} />
+            Go back
+        </button>
+
+      <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>Login to your account</CardTitle>
           <CardDescription>
