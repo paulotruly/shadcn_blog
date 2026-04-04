@@ -22,7 +22,7 @@ const menuItems = [
 ]
 
 function SidebarDashboard() {
-  const { user, userDetails, logout } = useAuth()
+  const { userDetails, logout } = useAuth()
   const navigate = useNavigate()
 
   const handleLogout = () => {
@@ -72,7 +72,7 @@ function SidebarDashboard() {
             <Avatar className="h-9 w-9 border border-slate-700/50">
               <AvatarImage src={userDetails?.image} alt={userDetails?.firstName} />
               <AvatarFallback className="bg-slate-800 text-slate-300 text-sm">
-                {userDetails?.firstName?.charAt(0) || user?.username?.charAt(0)}
+                {userDetails?.firstName?.charAt(0) || userDetails?.username?.charAt(0)}
               </AvatarFallback>
             </Avatar>
 
@@ -81,7 +81,7 @@ function SidebarDashboard() {
                 {userDetails?.firstName} {userDetails?.lastName}
               </p>
               <p className="text-xs text-slate-500 truncate">
-                @{user?.username}
+                @{userDetails?.username}
               </p>
             </div>
 

@@ -24,7 +24,7 @@ import DeleteConfirmationDialog from '@/components/DeleteConfirmationDialog'
 import { useAuth } from '@/context/AuthContext'
 
 function DashboardPosts() {
-  const { user } = useAuth()
+  const { userDetails } = useAuth()
   const navigate = useNavigate()
 
   const POST_PER_PAGE = 15
@@ -57,17 +57,17 @@ function DashboardPosts() {
 
   useEffect(() => {
     async function fetchPosts() {
-      if (!user?.id) return
+      if (!userDetails?.id) return
       setLoading(true)
       const skip = (page - 1) * POST_PER_PAGE
-      const data = await getPostsByUserId(user.id, POST_PER_PAGE, skip)
+      const data = await getPostsByUserId(userDetails.id, POST_PER_PAGE, skip)
       setPosts(data.posts)
       setTotalPosts(data.total)
       setLoading(false)
     }
     
     fetchPosts()
-  }, [page, user?.id])
+  }, [page, userDetails?.id])
 
   return (
     <div className="space-y-6">
