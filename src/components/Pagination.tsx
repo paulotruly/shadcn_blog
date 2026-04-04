@@ -15,21 +15,26 @@ interface PaginationProps {
   route?: string
 }
 
-function getPageNumbers(currentPage: number, totalPages: number, route: string): (number | "ellipsis")[] {
-  if (currentPage === 1) {
-    return [1, 2, 3, "ellipsis", totalPages - 1, totalPages]
+function getPageNumbers(currentPage: number, totalPages: number): (number | "ellipsis")[] {
+  if (totalPages <= 1) {
+    return []
   }
-  if (currentPage === 2) {
-    return [1, 2, 3, "ellipsis", totalPages - 1, totalPages]
+  
+  if (totalPages <= 7) {
+    return Array.from({ length: totalPages }, (_, i) => i + 1)
   }
-  if (currentPage === totalPages - 1) {
-    return [currentPage - 3, currentPage - 2, currentPage - 1, currentPage, currentPage + 1]
+  
+  if (currentPage <= 3) {
+    return [1, 2, 3, 4, "ellipsis", totalPages]
   }
-  if (currentPage === totalPages) {
-    return [currentPage -4, currentPage - 3, currentPage - 2, currentPage - 1, currentPage]
+  
+  if (currentPage >= totalPages - 2) {
+    return [1, "ellipsis", totalPages - 3, totalPages - 2, totalPages - 1, totalPages]
   }
-  return [currentPage - 2, currentPage - 1, currentPage, "ellipsis", totalPages - 1, totalPages]
+  
+  return [1, "ellipsis", currentPage - 1, currentPage, currentPage + 1, "ellipsis", totalPages]
 }
+
 
 export default function PaginationComponent({
   currentPage, 
@@ -37,12 +42,16 @@ export default function PaginationComponent({
   route = '/',
 }: PaginationProps) {
 
-const navigate = useRouter()
-const pages = getPageNumbers(currentPage, totalPages, route)
+  const navigate = useRouter()
+  const pages = getPageNumbers(currentPage, totalPages)
 
-const goToPage = (page: number) => {
-  navigate.navigate({to: route, search: {page}})
-}
+  const goToPage = (page: number) => {
+    navigate.navigate({to: route, search: {page}})
+  }
+
+  if (pages.length === 0) {
+    return null
+  }
 
   return (
     <Pagination className="text-slate-400">
@@ -65,7 +74,6 @@ const goToPage = (page: number) => {
             {page === "ellipsis" ? (
               <PaginationEllipsis />
             ) : (
-
               <PaginationLink
                 onClick={(e) => {
                   e.preventDefault()
@@ -74,9 +82,7 @@ const goToPage = (page: number) => {
                 isActive={page === currentPage}
                 href="#"
               >
-
                 {page}
-
               </PaginationLink>
             )}
           </PaginationItem>

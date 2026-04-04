@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/table"
 import { Settings2, PencilIcon, TrashIcon, ThumbsUp, ThumbsDown } from "lucide-react"
 import { createColumnHelper } from "@tanstack/react-table"
-import { deletePost, getPostsWithTotal } from '../api/posts'
+import { deletePost, getPostsByUserId } from '../api/posts'
 import PaginationComponent from '@/components/Pagination'
 import { Button } from "@/components/ui/button"
 import {
@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useNavigate } from '@tanstack/react-router'
 import DeleteConfirmationDialog from '@/components/DeleteConfirmationDialog'
+import { useAuth } from '@/context/AuthContext'
 
 const columnHelper = createColumnHelper<Post>()
 
@@ -38,11 +39,6 @@ const columns = [
 
   columnHelper.accessor('body', {
     header: () => 'Conteúdo',
-    cell: info => info.getValue(),
-  }),
-
-  columnHelper.accessor('userId', {
-    header: () => 'User ID',
     cell: info => info.getValue(),
   }),
 
@@ -68,6 +64,7 @@ const columns = [
 ] as const
 
 function DashboardPosts() {
+  const { user } = useAuth()
   const navigate = useNavigate()
 
   const POST_PER_PAGE = 15
@@ -89,9 +86,10 @@ function DashboardPosts() {
 
   const handleDeleteConfirm = async () => {
     if (!postToDelete) return
+    const postIdToDelete = postToDelete.id
     setIsDeleting(true)
     await deletePost(postToDelete.id)
-    setPosts(posts.filter(p => p.id !== postToDelete.id)) // não entendi isso
+    setPosts(currentPosts => currentPosts.filter(p => p.id !== postIdToDelete))
     setDeleteDialogOpen(false)
     setPostToDelete(null)
     setIsDeleting(false)
@@ -99,15 +97,17 @@ function DashboardPosts() {
 
   useEffect(() => {
     async function fetchPosts() {
-        setLoading(true)
-        const skip = (page - 1) * POST_PER_PAGE
-        const data = await getPostsWithTotal(POST_PER_PAGE, skip)
-        setPosts(data.posts)
-        setTotalPosts(data.total)
-        setLoading(false)
+      if (!user?.id) return
+      setLoading(true)
+      const skip = (page - 1) * POST_PER_PAGE
+      const data = await getPostsByUserId(user.id, POST_PER_PAGE, skip)
+      setPosts(data.posts)
+      setTotalPosts(data.total)
+      setLoading(false)
     }
+    
     fetchPosts()
-  }, [page]) 
+  }, [page, user?.id])
 
   return (
     <div className="w-full overflow-x-auto">
@@ -148,8 +148,6 @@ function DashboardPosts() {
                       ? post.body.slice(0, 35) + '...' 
                       : post.body}
                   </TableCell>
-
-                  <TableCell>{post.userId}</TableCell>
 
                   <TableCell>{post.tags.map((tag) => (
                     <span key={tag} className="inline-block bg-slate-700 text-slate-200 px-2 py-1 rounded-full text-xs mr-1">

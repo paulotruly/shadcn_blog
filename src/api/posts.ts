@@ -56,3 +56,8 @@ export async function getUser(id: number): Promise<UserResponse> {
     const response = await fetch(`${BASE_URL}/users/${id}`)
     return response.json()
 }
+
+export async function getPostsByUserId(userId: number, limit: number, skip: number): Promise<PostsResponse> {
+    const response = await fetch(`${BASE_URL}/posts/user/${userId}?limit=${limit}&skip=${skip}`)
+    return response.json()
+}
