@@ -5,7 +5,7 @@ import type { Post as PostType } from '../types'
 import { useEffect, useState } from 'react'
 import PaginationComponent from './Pagination'
 import { useNavigate } from '@tanstack/react-router'
-import { FileText } from 'lucide-react'
+
 
 interface TimelineProps{
   page: number

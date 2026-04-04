@@ -1,18 +1,19 @@
+import { getToken, setToken, getUserId, setUserId, removeToken, removeUserId } from "@/lib/cookies";
 import type { AuthResponse, UserResponse } from "@/types";
-import { createContext, useContext, useReducer, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useReducer, type ReactNode } from "react";
 
 type AuthState = {
-    user: AuthResponse | null;
-    userDetails: UserResponse | null;
-    isAuthentic: boolean;
-    isLoading: boolean;
+    user: AuthResponse | null; 
+    userDetails: UserResponse | null; 
+    isAuthentic: boolean;    
+    isLoading: boolean; 
 }
 
 type AuthAction = 
-    | { type: "LOGIN"; payload: AuthResponse }
-    | { type: "LOGOUT" }
-    | { type: "SET_LOADING"; payload: boolean }
-    | { type: "SET_USER_DETAILS"; payload: UserResponse};
+    | { type: "LOGIN"; payload: AuthResponse }     
+    | { type: "LOGOUT" }       
+    | { type: "SET_LOADING"; payload: boolean }        
+    | { type: "SET_USER_DETAILS"; payload: UserResponse }
 
 function AuthReducer(state: AuthState, action: AuthAction): AuthState {
     switch (action.type) {
@@ -52,9 +53,9 @@ interface AuthContextType {
     userDetails: UserResponse | null;
     isAuthentic: boolean;
     isLoading: boolean;
-    login: (data: AuthResponse) => void; 
-    logout: () => void;
-    fetchUserDetails: (id: number) => Promise<void>;
+    login: (data: AuthResponse) => void;  
+    logout: () => void; 
+    fetchUserDetails: (id: number) => Promise<void>; 
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -81,11 +82,15 @@ export function AuthProvider({children}: AuthProviderProps) {
     });
 
     const login = (data: AuthResponse) => {
-        dispatch({ type: "LOGIN", payload: data });
+        setToken(data.accessToken)
+        setUserId(data.id)
+        dispatch({ type: "LOGIN", payload: data })
     }
 
     const logout = () => {
-        dispatch({ type: "LOGOUT" });
+        removeToken()
+        removeUserId()
+        dispatch({ type: "LOGOUT" })
     }
 
     const fetchUserDetails = async (id: number) => {
@@ -93,6 +98,15 @@ export function AuthProvider({children}: AuthProviderProps) {
         const data: UserResponse = await response.json()
         dispatch({ type: "SET_USER_DETAILS", payload: data })
     }
+
+    useEffect(() => {
+        const token = getToken()
+        const storedUserId = getUserId()
+        
+        if (token && !state.user && !state.userDetails && storedUserId) {
+            fetchUserDetails(parseInt(storedUserId))
+        }
+    }, [state.user, state.userDetails]) 
     
     return (
         <AuthContext.Provider
