@@ -12,18 +12,17 @@ import {
   SidebarMenuItem,
   SidebarProvider,
 } from "./ui/sidebar"
-import { FileText, LogOut, Home } from "lucide-react"
+import { FileText, LogOut } from "lucide-react"
 import { useAuth } from "@/context/AuthContext"
 import { removeToken } from "@/lib/cookies"
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 
 const menuItems = [
-  // { label: "Home", icon: Home, to: "/dashboard" },
   { label: "Posts", icon: FileText, to: "/dashboard/posts" },
 ]
 
 function SidebarDashboard() {
-
-  const { logout } = useAuth()
+  const { user, userDetails, logout } = useAuth()
   const navigate = useNavigate()
 
   const handleLogout = () => {
@@ -61,21 +60,40 @@ function SidebarDashboard() {
           </SidebarGroup>
         </SidebarContent>
 
-        <SidebarFooter>
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton onClick={handleLogout} className="text-white">
-                <LogOut/>
-                <span>Sair</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
+        <SidebarFooter className="border-t border-slate-700 pt-4">
+          <div className="flex items-center gap-3 px-2">
+            
+            <Avatar className="h-9 w-9 border-2 border-slate-600">
+              <AvatarImage src={userDetails?.image} alt={userDetails?.firstName} />
+              {/* mostra a primeira letra do nome se a imagem não carregar */}
+              <AvatarFallback className="bg-slate-700 text-white text-sm">
+                {userDetails?.firstName?.charAt(0) || user?.username?.charAt(0)}
+              </AvatarFallback>
+            </Avatar>
+
+            <div className="flex flex-col">
+              <span className="text-sm font-medium text-white">
+                {userDetails?.firstName} {userDetails?.lastName}
+              </span>
+              <span className="text-xs text-slate-400">
+                @{user?.username}
+              </span>
+            </div>
+
+            <button
+              onClick={handleLogout}
+              className="ml-auto p-2 hover:bg-slate-700 rounded-md transition-colors"
+              title="Sair"
+            >
+              <LogOut size={18} className="text-slate-400 hover:text-white" />
+            </button>
+          </div>
         </SidebarFooter>
 
       </Sidebar>
 
       <SidebarInset className="bg-slate-950 w-full min-h-screen text-white p-10">
-        <Outlet />
+        <Outlet/>
       </SidebarInset>
     </SidebarProvider>
   )

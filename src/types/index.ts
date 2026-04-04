@@ -52,3 +52,12 @@ export interface CommentsResponse {
   skip: number;
   limit: number;
 }
+
+export interface UserResponse {
+  id: number
+  username: string
+  email: string
+  firstName: string
+  lastName: string
+  image: string
+}

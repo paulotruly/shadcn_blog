@@ -28,7 +28,7 @@ export function LoginForm({
 
   const token = getToken()
 
-  const { login } = useAuth()
+  const { login, fetchUserDetails } = useAuth()
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
 
@@ -57,6 +57,7 @@ export function LoginForm({
 
     if (response.ok) {
       login(data)
+      fetchUserDetails(data.id)
       setToken(data.accessToken)
       navigate({ to: '/dashboard' })
     } else {

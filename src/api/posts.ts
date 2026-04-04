@@ -1,4 +1,4 @@
-import type { Comment, CommentsResponse, Post, PostsResponse } from "@/types";
+import type { Comment, CommentsResponse, Post, PostsResponse, UserResponse } from "@/types";
 
 const BASE_URL = "https://dummyjson.com"
 
@@ -49,5 +49,10 @@ export async function deletePost(id: number): Promise<Post> {
     const response = await fetch(`${BASE_URL}/posts/${id}`, {
         method: 'DELETE',
     })
+    return response.json()
+}
+
+export async function getUser(id: number): Promise<UserResponse> {
+    const response = await fetch(`${BASE_URL}/users/${id}`)
     return response.json()
 }
